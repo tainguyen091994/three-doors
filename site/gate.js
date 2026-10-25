@@ -1,74 +1,48 @@
-// The gate before the doors, in three test versions. Pick one with ?gate=a, ?gate=b or ?gate=c.
-// a: a moving wall of all 19 stories. b: three live slits of light behind the title. c: story lines as giant type with the songs showing through.
-// Images come from scenePaths(), so new web scenes replace the old loops here too.
+// The gate before the doors: a torch in the dark. The light follows the pointer, or wanders alone on a phone, and shows the three scenes.
+// Tap anywhere to walk in with sound. Images come from scenePaths(), so new web scenes replace the old loops here too.
+// Only the gate videos in view play. With reduced motion nothing plays and the light stays put.
 
 (() => {
   const gate = $('#gate');
-  const pick = (new URLSearchParams(location.search).get('gate') || 'a').toLowerCase();
-  const v = ['a', 'b', 'c'].includes(pick) ? pick : 'a';
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const bg = document.createElement('div');
-  bg.className = `gate-bg gate-${v}`; bg.setAttribute('aria-hidden', 'true');
+  bg.className = 'gate-bg'; bg.setAttribute('aria-hidden', 'true');
   gate.prepend(bg);
-  gate.classList.add(`is-${v}`);
-  const all = ARTISTS.flatMap((a) => a.tracks);
-  $('#gateCount').textContent = `${all.length} songs. ${all.length} small stories.`;
 
-  if (v === 'a') {
-    // One column per artist; each column holds its songs twice so the scroll can loop
-    ARTISTS.forEach((a, k) => {
-      const col = document.createElement('div');
-      col.className = 'col'; col.style.setProperty('--c', a.color);
-      col.style.setProperty('--dur', `${70 + k * 14}s`);
-      if (k === 1) col.classList.add('down');
-      const lane = document.createElement('div'); lane.className = 'lane';
-      [...a.tracks, ...a.tracks].forEach((t, j) => {
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-        const box = document.createElement('div'); box.className = 'pic';
-        tile.appendChild(box);
-        tile.insertAdjacentHTML('beforeend', `<p>${t.story[0]} ${t.story[1]}</p><span>${a.name} · ${t.title}</span>`);
-        lane.appendChild(tile);
-        mount(box, scenePaths(t));
-      });
-      col.appendChild(lane); bg.appendChild(col);
-    });
-  }
+  const slides = ARTISTS.map((a) => {
+    const s = document.createElement('div');
+    s.className = 'slide'; s.style.setProperty('--c', a.color);
+    const box = document.createElement('div'); box.className = 'pic';
+    s.appendChild(box);
+    s.insertAdjacentHTML('beforeend', `<span class="who">${a.name}</span>`);
+    bg.appendChild(s);
+    mount(box, scenePaths(a.feature));
+    return s;
+  });
+  const dark = document.createElement('div'); dark.className = 'dark'; bg.appendChild(dark);
+  const names = [...bg.querySelectorAll('.who')];
+  const pauseAll = () => bg.querySelectorAll('video').forEach((v) => v.pause());
 
-  if (v === 'b') {
-    ARTISTS.forEach((a, k) => {
-      const s = document.createElement('div');
-      s.className = 'slit2'; s.style.setProperty('--c', a.color); s.style.setProperty('--d', `${k * -2.6}s`);
-      const box = document.createElement('div'); box.className = 'pic';
-      s.appendChild(box);
-      s.insertAdjacentHTML('beforeend', `<span>${a.name}</span>`);
-      bg.appendChild(s);
-      mount(box, scenePaths(a.feature));
-    });
-  }
+  // The pointer, smoothed. Until a hand touches the screen, the point wanders on its own.
+  const P = { x: innerWidth / 2, y: innerHeight / 2, tx: innerWidth / 2, ty: innerHeight / 2, hand: false };
+  const move = (e) => { P.hand = true; P.tx = e.clientX; P.ty = e.clientY; };
+  addEventListener('pointermove', move); addEventListener('pointerdown', move);
+  let raf = 0;
+  const tick = (t) => {
+    if (!P.hand && !still) { P.tx = innerWidth * (.5 + .36 * Math.sin(t / 3100)); P.ty = innerHeight * (.5 + .3 * Math.sin(t / 2300 + 1)); }
+    P.x += (P.tx - P.x) * .08; P.y += (P.ty - P.y) * .08;
+    const r = Math.max(innerWidth, innerHeight) * (innerWidth < 720 ? .34 : .2);
+    bg.style.setProperty('--x', `${P.x}px`); bg.style.setProperty('--y', `${P.y}px`); bg.style.setProperty('--r', `${r}px`);
+    const col = Math.min(2, Math.floor(P.x / (innerWidth / 3)));
+    names.forEach((n, k) => n.classList.toggle('on', k === col));
+    if (!still) raf = requestAnimationFrame(tick);
+  };
+  tick(0);
+  if (still) setTimeout(pauseAll, 700);
 
-  if (v === 'c') {
-    ARTISTS.forEach((a, k) => {
-      const row = document.createElement('div');
-      row.className = 'row2'; row.style.setProperty('--c', a.color);
-      row.style.setProperty('--dur', `${90 + k * 20}s`);
-      if (k === 1) row.classList.add('rev');
-      const box = document.createElement('div'); box.className = 'pic';
-      row.appendChild(box);
-      const text = a.tracks.map((t) => t.story.join(' ')).join('  ·  ');
-      row.insertAdjacentHTML('beforeend', `<div class="type"><div class="run"><span>${text}  ·  </span><span>${text}  ·  </span></div></div><em>${a.name}</em>`);
-      bg.appendChild(row);
-      mount(box, scenePaths(a.feature));
-    });
-  }
-
-  // Test switcher; remove once a version is picked
-  const sw = document.createElement('nav');
-  sw.className = 'gate-switch';
-  sw.innerHTML = 'Gate ' + ['a', 'b', 'c'].map((x) => `<a href="?gate=${x}${location.hash}" class="${x === v ? 'on' : ''}">${x.toUpperCase()}</a>`).join('');
-  gate.appendChild(sw);
-
-  // Stop the gate videos once the visitor is inside
-  const stop = () => setTimeout(() => bg.querySelectorAll('video').forEach((e) => e.pause()), 1300);
+  // A tap anywhere walks in with sound; "No sound" is the other way in
+  gate.addEventListener('click', (e) => { if (!e.target.closest('button, a')) $('#enterSound').click(); });
+  const stop = () => setTimeout(() => { pauseAll(); cancelAnimationFrame(raf); }, 1300);
   $('#enterSound').addEventListener('click', stop);
   $('#enterMute').addEventListener('click', stop);
 })();
