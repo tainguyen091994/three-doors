@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three Doors</title>
+<meta name="description" content="Ceralie, Julius Wren and halfsaid. Three AI artists. Each song opens with a short story.">
+<link rel="stylesheet" href="base.css?v=3">
+<link rel="stylesheet" href="site.css?v=3">
+<link rel="stylesheet" href="gate.css?v=3">
+</head>
+<body class="at-gate">
+<div class="grain"></div>
+<a class="brand" href="#/">Three Doors</a>
+<button class="sound-btn" id="soundBtn" hidden>Sound on</button>
+
+<section class="gate" id="gate">
+  <div>
+    <div class="eyebrow">Ceralie · Julius Wren · halfsaid</div>
+    <h1>Three doors.<br>Three voices.</h1>
+    <p class="count" id="gateCount"></p>
+    <p id="gateText">Each door is open a little. Move toward one to hear what is behind it. Headphones help.</p>
+    <div class="row">
+      <button class="pill ember" id="enterSound">Enter with sound</button>
+      <button class="link" id="enterMute">Enter without sound</button>
+    </div>
+  </div>
+</section>
+
+<main class="view doors on" id="home" aria-label="Three artists"></main>
+
+<div class="knockL" id="knock" aria-hidden="true">
+  <video muted loop playsinline></video>
+  <div class="knock"><span></span></div>
+</div>
+
+<section class="view room" id="room" aria-labelledby="roomName">
+  <canvas class="strings" id="strings"></canvas>
+  <div class="room-head" id="roomHead">
+    <div class="eyebrow" id="roomAlbum"></div>
+    <h1 id="roomName"></h1>
+    <p id="roomBio"></p>
+    <p class="hint" id="roomHint"></p>
+  </div>
+  <div class="labels" id="labels"></div>
+  <ol class="sr" id="trackList" aria-label="Songs"></ol>
+  <nav class="room-nav"><a class="link" href="#/">Back to the doors</a><a class="link" id="roomNext"></a></nav>
+</section>
+
+<section class="view scene" id="scene">
+  <div class="media" id="media"></div>
+  <div class="glow"></div>
+  <div class="word" id="word"></div>
+  <div class="line" id="line" aria-live="polite"></div>
+  <div class="end" id="end">
+    <div class="who" id="who"></div>
+    <div class="lyric" id="lyric"></div>
+    <div class="feel" id="feel"></div>
+    <div class="row">
+      <button class="pill ember" id="play">Play the song</button>
+      <span class="meter" id="meter"><i></i><i></i><i></i><i></i><i></i></span>
+      <a class="link" id="sceneBack">Back to the room</a>
+    </div>
+  </div>
+  <button class="skip" id="skip">Skip the story</button>
+</section>
+
+<footer class="disclose">AI artists. A person writes every story and picks every take.</footer>
+
+<script src="sound.js?v=3"></script>
+<script src="tracks.js?v=3"></script>
+<script src="stories.js?v=3"></script>
+<script src="site.js?v=3"></script>
+<script src="gate.js?v=3"></script>
+</body>
+</html>
