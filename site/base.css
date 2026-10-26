@@ -1,6 +1,5 @@
 /* Base for the three probes. Ember frame (black, warm greys, Apple-like type, one orange button).
    Each artist room uses its own colour from the artist palette. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Instrument+Serif:ital@0;1&display=swap');
 
 :root {
   --page: #000;
