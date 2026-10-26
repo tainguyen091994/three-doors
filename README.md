@@ -16,4 +16,6 @@ Scene media: the site tries `site/assets/scenes/<id>.mp4`, then `<id>.jpg`, then
 
 A push to `main` deploys `site/` to GitHub Pages. Pull requests only build. In the repo settings, set Pages source to **GitHub Actions**.
 
+Vercel also deploys the site. `vercel.json` sets the output folder to `site/`. Each pull request gets its own preview URL.
+
 The audio files are not in this repo. Until they have a host, songs do not play online.
