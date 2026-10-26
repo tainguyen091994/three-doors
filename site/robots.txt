@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tainguyen091994.github.io/three-doors/sitemap.xml

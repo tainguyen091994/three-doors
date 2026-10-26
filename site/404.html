@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not here · Three Doors</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --text: #f7f4f1; --text-2: #a39b94; --ember: #ff6b1a; --ember-hover: #ff8540; --on-ember: #0a0908; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: #000; color: var(--text); }
+  body { display: grid; place-items: center; text-align: center; padding: 24px; font-family: 'SF Pro Display', system-ui, -apple-system, 'Inter', 'Segoe UI', sans-serif; font-size: 17px; line-height: 1.47; -webkit-font-smoothing: antialiased;
+    background: radial-gradient(circle at 50% 38%, rgba(255, 190, 120, .16), transparent 28%), #000; }
+  h1 { font-family: 'Newsreader', 'Times New Roman', serif; font-style: italic; font-weight: 400; font-size: clamp(34px, 7vw, 64px); letter-spacing: 0; }
+  p { margin-top: 12px; color: var(--text-2); }
+  a { display: inline-flex; align-items: center; min-height: 44px; margin-top: 28px; padding: 11px 22px; border-radius: 9999px; background: var(--ember); color: var(--on-ember); font-weight: 600; text-decoration: none; }
+  a:hover { background: var(--ember-hover); }
+  a:focus-visible { outline: 2px solid var(--ember-hover); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>This door is closed.</h1>
+  <p>No page lives here.</p>
+  <a id="home" href="/">Back to the doors</a>
+</main>
+<script>
+  // GitHub Pages serves this site under /three-doors/; Vercel serves it at the root
+  if (/\.github\.io$/.test(location.hostname)) document.getElementById('home').href = '/three-doors/';
+</script>
+</body>
+</html>
